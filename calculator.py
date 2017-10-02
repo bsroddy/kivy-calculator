@@ -6,8 +6,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 
-class Numpad(Widget):
-    """The numpad, digits 0-9. No other buttons."""
+class ButtonPad(Widget):
+    """The buttons of the calculator. Contains digits 0-9, the four arithmetic operations,
+     the clear button, and the equals button."""
     pass
 
 
@@ -15,7 +16,7 @@ class CalculatorApp(App):
     """The main app."""
     def build(self):
         """Currently only displays the numpad."""
-        return Numpad()
+        return ButtonPad()
 
 if __name__ == '__main__':
     CalculatorApp().run()
