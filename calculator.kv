@@ -2,52 +2,74 @@
 
 <Screen>
     Label:
+        id: screen_text
         text: "screen"
+
 <ButtonPad>
     BoxLayout:
+        id: 'outer BoxLayout'
         orientation: 'vertical'
         GridLayout:
+            id: 'inner GridLayout'
             size_hint:1,.8
             cols: 4
             Button:
+                id: '7'
                 text: '7'
             Button:
+                id: '8'
                 text: '8'
             Button:
+                id: '8'
                 text: '9'
             Button:
+                id: 'C'
                 text: 'C'
             Button:
+                id: '4'
                 text: '4'
             Button:
+                id: '5'
                 text: '5'
             Button:
+                id: '6'
                 text: '6'
             Button:
                 text: '/'
             Button:
+                id: '1'
                 text: '1'
             Button:
+                id: '2'
                 text: '2'
             Button:
+                id: '3'
                 text: '3'
             Button:
+                id: 'x'
                 text: 'x'
             Button:
-                text: '+/- '
+                id: '+/-'
+                text: '+/-'
             Button:
+                id: '0'
                 text: '0'
             Button:
+                id: '.'
                 text: '.'
             Button:
+                id: '-'
                 text: '-'
         BoxLayout:
+            id: '= and + BoxLayout'
             size_hint: 1,.2
             orientation: 'horizontal'    
             Button:
+                id: '='
                 size_hint: .75,1
                 text: '='
             Button:
+                id: '+'
                 size_hint: .25,1
                 text: '+'    
 
@@ -56,6 +78,7 @@
         spacing: 120
         orientation: 'vertical'
         Screen:
+            
         ButtonPad:
 
         
