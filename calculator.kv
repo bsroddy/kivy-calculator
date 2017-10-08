@@ -1,18 +1,17 @@
 #:kivy 1.0
 
 <Calculator>:
-    spacing: 120
     orientation: 'vertical'
     Label:
         id: screen
-        text: "screen"
+        text: ""
         size_hint: 1, .25
     BoxLayout:
         id: 'button pad'
         orientation: 'vertical'
         size_hint: 1,.75
         GridLayout:
-            id: ' GridLayout'
+            id: 'upper buttons'
             size_hint:1, .8
             cols: 4
             Button:
@@ -80,7 +79,7 @@
                 text: '-'
                 on_release: root.enter_button('-')
         BoxLayout:
-            id: '= and +'
+            id: 'lower buttons'
             size_hint: 1, 1
             orientation: 'horizontal'
             size_hint: 1, .2
