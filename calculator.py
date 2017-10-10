@@ -12,9 +12,9 @@ class Calculator(BoxLayout):
         fields.  entry_state ("accepting_first_operand", "accepting_second_operand", or "result") determines how input
         is treated.
 
-        accepting_first_operand: Digits entered are concatenated to those onscreen, and entry_state switches to
-        "accepting_second_operand" when operation button is pressed. Operation is stored in current_operation field
-        (possible values: "+", "-", "x", and "/").
+        accepting_first_operand: Digits entered are concatenated to those onscreen. Screen is cleared and entry_state
+        switches to "accepting_second_operand" when operation button is pressed. Operation is stored in
+        current_operation field (possible values: "+", "-", "x", and "/").
 
         accepting_second_operand: When a digit is entered, screen is cleared. Subsequent digits entered are
         concatenated to those onscreen. If the "=" button is pressed: two operands are performed upon, screen
@@ -31,6 +31,11 @@ class Calculator(BoxLayout):
         self.current_operation = ''
         self.first_operand = 0
         self.second_operand = 0
+
+    def clear_operands_and_operation(self):
+        self.set_first_operand("")
+        self.set_second_operand("")
+        self.set_current_operation("")
 
     def get_entry_state(self):
         return self.entry_state
@@ -80,18 +85,69 @@ class Calculator(BoxLayout):
         if self.has_number_on_screen():
             self.set_screen_text(str(int(self.get_screen_text()) * -1))
 
+    def operate_on_operands(self, first_operand, second_operand, operation):
+        if operation == "+":
+            return int(first_operand) + int(second_operand)
+        if operation == "-":
+            return int(first_operand) - int(second_operand)
+        if operation == "x":
+            return int(first_operand) * int(second_operand)
+        if operation == "/":
+            return int(first_operand) / int(second_operand)
+
 
     def enter_button(self, button_entry):
         if len(button_entry) == 1:
             if button_entry.isdigit():
-                self.add_digit_to_screen(button_entry)
+                if self.get_entry_state() == "accepting_first_operand" or self.get_entry_state() == \
+                        "accepting_second_operand":
+                    self.add_digit_to_screen(button_entry)
 
-            if button_entry == 'C':
+                elif self.get_entry_state() == "result":
+                    self.clear_screen_text()
+                    self.set_entry_state("accepting_first_operand")
+                    self.add_digit_to_screen(button_entry)
+
+            if button_entry in "+-x/":
+                if self.get_entry_state() == "accepting_first_operand":
+                    self.set_first_operand(self.get_screen_text())
+                    self.clear_screen_text()
+                    self.set_current_operation(button_entry)
+                    self.set_entry_state("accepting_second_operand")
+
+                if self.get_entry_state() == "result":
+                    self.set_first_operand(self.get_screen_text())
+                    self.set_current_operation(button_entry)
+                    self.clear_screen_text()
+                    self.set_entry_state("accepting_second_operand")
+
+            if button_entry == "=":
+                if self.get_entry_state() == "accepting_second_operand":
+                    if self.get_screen_text().isdigit():
+                        self.set_second_operand(self.get_screen_text())
+                        result = self.operate_on_operands(self.get_first_operand(), self.get_second_operand(), \
+                            self.get_current_operation())
+                        self.clear_operands_and_operation()
+                        self.set_screen_text(str(result))
+                        self.set_entry_state("result")
+
+
+
+            elif button_entry == 'C':
                 self.clear_screen_text()
+                self.set_entry_state("accepting_first_operand")
+                self.set_first_operand("")
+                self.set_second_operand("")
+                self.set_current_operation("")
 
         elif len(button_entry) == 3:
             if button_entry == '+/-':
-                self.switch_displayed_number_parity()
+                if self.get_entry_state() == "result":
+                    self.clear_screen_text()
+                    self.clear_operands_and_operation()
+                    self.set_entry_state("accepting_first_operand")
+                else:
+                    self.switch_displayed_number_parity()
 
 
 class CalculatorApp(App):
