@@ -66,9 +66,20 @@ class Calculator(BoxLayout):
     def get_screen_text(self):
         return self.ids["screen"].text
 
+    def number_decimal_points_on_screen(self):
+        return self.get_screen_text().count(".")
+
+    def find_decimal_point_on_screen(self):
+        return self.get_screen_text().find(".")
+
     def has_number_on_screen(self):
         screen_text = self.ids['screen'].text
-        return screen_text.isdigit() or (screen_text[1:].isdigit() and screen_text[0] == '-')
+        found_decimal = self.find_decimal_point_on_screen()
+        return screen_text.isdigit() or (screen_text[1:].isdigit() and screen_text[0] == '-') or \
+                  (self.number_decimal_points_on_screen() == 1 and ((screen_text[0] == '-' and \
+                    (screen_text[1:found_decimal] + screen_text[found_decimal + 1:]).isdigit()) \
+                        or (screen_text[0:found_decimal] + screen_text[found_decimal+1:]).isdigit()))
+
 
     def set_screen_text(self, new_text):
         self.ids['screen'].text = new_text
@@ -77,9 +88,9 @@ class Calculator(BoxLayout):
         self.ids['screen'].text = ''
 
 
-    def add_digit_to_screen(self, digit):
+    def add_to_screen(self, to_be_added):
         current_screen_text = self.get_screen_text()
-        self.set_screen_text(current_screen_text + digit)
+        self.set_screen_text(current_screen_text + to_be_added)
 
     def switch_displayed_number_parity(self):
         if self.has_number_on_screen():
@@ -101,14 +112,14 @@ class Calculator(BoxLayout):
             if button_entry.isdigit():
                 if self.get_entry_state() == "accepting_first_operand" or self.get_entry_state() == \
                         "accepting_second_operand":
-                    self.add_digit_to_screen(button_entry)
+                    self.add_to_screen(button_entry)
 
                 elif self.get_entry_state() == "result":
                     self.clear_screen_text()
                     self.set_entry_state("accepting_first_operand")
-                    self.add_digit_to_screen(button_entry)
+                    self.add_to_screen(button_entry)
 
-            if button_entry in "+-x/":
+            elif button_entry in "+-x/":
                 if self.get_entry_state() == "accepting_first_operand":
                     self.set_first_operand(self.get_screen_text())
                     self.clear_screen_text()
@@ -121,7 +132,7 @@ class Calculator(BoxLayout):
                     self.clear_screen_text()
                     self.set_entry_state("accepting_second_operand")
 
-            if button_entry == "=":
+            elif button_entry == "=":
                 if self.get_entry_state() == "accepting_second_operand":
                     if self.get_screen_text().isdigit():
                         self.set_second_operand(self.get_screen_text())
@@ -130,6 +141,19 @@ class Calculator(BoxLayout):
                         self.clear_operands_and_operation()
                         self.set_screen_text(str(result))
                         self.set_entry_state("result")
+
+            elif button_entry == ".":
+                if self.get_entry_state() == "accepting_first_operand" or self.get_entry_state() == \
+                    "accepting_second_operand":
+                    if self.has_number_on_screen():
+                        self.add_to_screen(".")
+                    elif self.get_screen_text() == "":
+                        self.add_to_screen("0.")
+                elif self.get_entry_state() == "result":
+                    self.clear_screen_text()
+                    self.clear_operands_and_operation()
+                    self.set_entry_state("accepting_first_operand")
+                    self.add_to_screen("0.")
 
 
 
