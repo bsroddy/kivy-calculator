@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.config import Config
+import time
 
 class Calculator(BoxLayout):
     """The widget that contains a screen and a button pad.  Initializes with entry_state and current_operation
@@ -94,17 +95,17 @@ class Calculator(BoxLayout):
 
     def switch_displayed_number_parity(self):
         if self.has_number_on_screen():
-            self.set_screen_text(str(int(self.get_screen_text()) * -1))
+            self.set_screen_text('%g'%(float(self.get_screen_text()) * -1))
 
     def operate_on_operands(self, first_operand, second_operand, operation):
         if operation == "+":
-            return int(first_operand) + int(second_operand)
+            return '%g'%(float(first_operand) + float(second_operand))
         if operation == "-":
-            return int(first_operand) - int(second_operand)
+            return '%g'%(float(first_operand) - float(second_operand))
         if operation == "x":
-            return int(first_operand) * int(second_operand)
+            return '%g'%(float(first_operand) * float(second_operand))
         if operation == "/":
-            return int(first_operand) / int(second_operand)
+            return '%g'%(float(first_operand) / float(second_operand))
 
 
     def enter_button(self, button_entry):
@@ -134,7 +135,7 @@ class Calculator(BoxLayout):
 
             elif button_entry == "=":
                 if self.get_entry_state() == "accepting_second_operand":
-                    if self.get_screen_text().isdigit():
+                    if self.has_number_on_screen():
                         self.set_second_operand(self.get_screen_text())
                         result = self.operate_on_operands(self.get_first_operand(), self.get_second_operand(), \
                             self.get_current_operation())
@@ -145,7 +146,9 @@ class Calculator(BoxLayout):
             elif button_entry == ".":
                 if self.get_entry_state() == "accepting_first_operand" or self.get_entry_state() == \
                     "accepting_second_operand":
-                    if self.has_number_on_screen():
+
+                    if self.has_number_on_screen() and self.number_decimal_points_on_screen() < 1:
+
                         self.add_to_screen(".")
                     elif self.get_screen_text() == "":
                         self.add_to_screen("0.")
@@ -158,11 +161,12 @@ class Calculator(BoxLayout):
 
 
             elif button_entry == 'C':
+                #############
+                #self.set_screen_text(str(self.has_number_on_screen()))
+                #time.sleep(3)
                 self.clear_screen_text()
                 self.set_entry_state("accepting_first_operand")
-                self.set_first_operand("")
-                self.set_second_operand("")
-                self.set_current_operation("")
+                self.clear_operands_and_operation()
 
         elif len(button_entry) == 3:
             if button_entry == '+/-':
