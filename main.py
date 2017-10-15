@@ -146,9 +146,13 @@ class Calculator(BoxLayout):
             elif button_entry == ".":
                 if self.get_entry_state() == "accepting_first_operand" or self.get_entry_state() == \
                     "accepting_second_operand":
+<<<<<<< HEAD:calculator.py
 
                     if self.has_number_on_screen() and self.number_decimal_points_on_screen() < 1:
 
+=======
+                    if self.has_number_on_screen() and self.number_decimal_points_on_screen() < 1:
+>>>>>>> main-py-file-rename:main.py
                         self.add_to_screen(".")
                     elif self.get_screen_text() == "":
                         self.add_to_screen("0.")
